@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta id="meta-color-scheme" name="color-scheme" content="light dark" />
+  <title>决定大转盘</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: #f7f5f0;
+      color: #1f1c18;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    [hidden] { display: none !important; }
+  </style>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div id="app-shell" class="app-shell">
+    <!-- 顶部栏 -->
+    <header class="top-bar">
+      <div class="brand-group">
+        <div class="brand-title-row">
+          <span class="brand-seal" aria-hidden="true">
+            <svg class="brand-seal-svg" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+              <path d="M12 3.5V12L18 18M12 12L6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              <circle cx="12" cy="12" r="2.2" fill="currentColor" />
+            </svg>
+          </span>
+          <h1 class="brand-title">决定大转盘</h1>
+          <span id="header-scene-pill" class="header-scene-pill">今天吃什么</span>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button type="button" id="btn-theme" class="icon-btn" aria-label="切换晨雾暖白或暮夜黑金主题" aria-pressed="false" title="切换深浅主题">
+          <svg class="icon-svg icon-theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8" />
+            <path d="M12 2.5v2.2M12 19.3v2.2M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+          <svg class="icon-svg icon-theme-moon" viewBox="0 0 24 24" aria-hidden="true" hidden>
+            <path d="M20.2 14.8A8.2 8.2 0 0 1 9.2 3.8a8.4 8.4 0 1 0 11 11z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <button type="button" id="btn-sound" class="icon-btn" aria-label="声音快捷开关" aria-pressed="true" title="声音开关">
+          <svg class="icon-svg icon-sound-on" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4.5 9.5h3.8l4.9-3.9v12.8l-4.9-3.9H4.5z" fill="currentColor" />
+            <path d="M16.2 8.6a4.8 4.8 0 0 1 0 6.8M18.8 6.2a8.2 8.2 0 0 1 0 11.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+          <svg class="icon-svg icon-sound-off" viewBox="0 0 24 24" aria-hidden="true" hidden>
+            <path d="M4.5 9.5h3.8l4.9-3.9v12.8l-4.9-3.9H4.5z" fill="currentColor" />
+            <path d="M16.2 9.5l4.6 5M20.8 9.5l-4.6 5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" />
+          </svg>
+        </button>
+
+        <button type="button" id="btn-settings" class="icon-btn" aria-label="打开设置与关于" title="设置与关于">
+          <svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.1" fill="none" stroke="currentColor" stroke-width="1.85" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.08a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.08a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 横向场景胶囊条 -->
+    <nav id="scene-strip" class="scene-strip custom-scroll" aria-label="选择决定场景">
+      <button type="button" class="scene-pill is-active" data-scene-id="eat" aria-pressed="true">今天吃什么</button>
+      <button type="button" class="scene-pill" data-scene-id="drink" aria-pressed="false">续命喝什么</button>
+      <button type="button" class="scene-pill" data-scene-id="buy" aria-pressed="false">该不该买</button>
+      <button type="button" class="scene-pill" data-scene-id="afterwork" aria-pressed="false">下班去干嘛</button>
+      <button type="button" class="scene-pill" data-scene-id="weekend" aria-pressed="false">周末去哪玩</button>
+      <button type="button" class="scene-pill" data-scene-id="party" aria-pressed="false">聚会大冒险</button>
+      <button type="button" class="scene-pill" data-scene-id="heal" aria-pressed="false">内耗救急指南</button>
+      <button type="button" class="scene-pill" data-scene-id="yesno" aria-pressed="false">是非硬币局</button>
+      <button type="button" id="btn-new-custom" class="scene-pill scene-pill-add">+ 自定义</button>
+    </nav>
+
+    <!-- 当前场景信息条 -->
+    <section class="scene-meta-card" aria-label="当前场景信息">
+      <div class="scene-meta-main">
+        <div class="scene-meta-title-row">
+          <span id="scene-tag" class="scene-tag">干饭救星</span>
+          <h2 id="scene-title" class="scene-title">今天吃什么</h2>
+        </div>
+        <p id="scene-subtitle" class="scene-subtitle">告别选择困难，这一口直接冲</p>
+      </div>
+      <div class="scene-meta-right">
+        <span id="pool-count-pill" class="pool-count-pill">8 项可选</span>
+        <button type="button" id="btn-restore-pool" class="restore-chip" hidden>一键复原</button>
+      </div>
+    </section>
+
+    <!-- 主转盘交互舞台 -->
+    <main class="wheel-stage-section">
+      <div class="wheel-stage">
+        <!-- 顶部水滴形金属指针 -->
+        <div id="wheel-pointer" class="wheel-pointer" aria-hidden="true">
+          <svg class="pointer-svg" viewBox="0 0 48 64" aria-hidden="true">
+            <defs>
+              <linearGradient id="pointer-metal-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#f7e2b2" />
+                <stop offset="45%" stop-color="#d89d47" />
+                <stop offset="100%" stop-color="#8c5a20" />
+              </linearGradient>
+              <linearGradient id="pointer-gem-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ff8577" />
+                <stop offset="100%" stop-color="#c9392c" />
+              </linearGradient>
+            </defs>
+            <path d="M24 61 C18 46, 8 33, 8 20 C8 10.6, 15.2 3, 24 3 C32.8 3, 40 10.6, 40 20 C40 33, 30 46, 24 61 Z" fill="url(#pointer-metal-grad)" stroke="#fff7e2" stroke-width="1.6" />
+            <circle cx="24" cy="20" r="7.2" fill="url(#pointer-gem-grad)" stroke="#fff2d2" stroke-width="1.6" />
+            <circle cx="21.8" cy="17.8" r="2.1" fill="#ffffff" fill-opacity="0.7" />
+          </svg>
+        </div>
+
+        <!-- 立体表圈 + 微光刻度点 + 比例容器 -->
+        <div class="wheel-bezel" id="wheel-bezel">
+          <div class="wheel-bezel-dots" aria-hidden="true">
+            <span class="bezel-dot dot-1"></span>
+            <span class="bezel-dot dot-2"></span>
+            <span class="bezel-dot dot-3"></span>
+            <span class="bezel-dot dot-4"></span>
+            <span class="bezel-dot dot-5"></span>
+            <span class="bezel-dot dot-6"></span>
+            <span class="bezel-dot dot-7"></span>
+            <span class="bezel-dot dot-8"></span>
+            <span class="bezel-dot dot-9"></span>
+            <span class="bezel-dot dot-10"></span>
+            <span class="bezel-dot dot-11"></span>
+            <span class="bezel-dot dot-12"></span>
+          </div>
+
+          <div class="wheel-aspect-box">
+            <div id="wheel-container" class="wheel-canvas-host" aria-label="决定大转盘，可手指拨动旋转">
+              <!-- JS 加载前的静态高审美转盘轮廓 -->
+              <svg id="wheel-static-fallback" class="wheel-static-svg" viewBox="0 0 320 320" aria-hidden="true">
+                <circle cx="160" cy="160" r="150" fill="#fffdf8" stroke="#e5ddd0" stroke-width="4" />
+                <path d="M160 160 L160 14 A146 146 0 0 1 263.2 56.8 Z" fill="#f4a293" />
+                <path d="M160 160 L263.2 56.8 A146 146 0 0 1 306 160 Z" fill="#fad5ae" />
+                <path d="M160 160 L306 160 A146 146 0 0 1 263.2 263.2 Z" fill="#b9d2be" />
+                <path d="M160 160 L263.2 263.2 A146 146 0 0 1 160 306 Z" fill="#a9c6dc" />
+                <path d="M160 160 L160 306 A146 146 0 0 1 56.8 263.2 Z" fill="#f5e3a8" />
+                <path d="M160 160 L56.8 263.2 A146 146 0 0 1 14 160 Z" fill="#cfc2e3" />
+                <path d="M160 160 L14 160 A146 146 0 0 1 56.8 56.8 Z" fill="#f4a293" />
+                <path d="M160 160 L56.8 56.8 A146 146 0 0 1 160 14 Z" fill="#fad5ae" />
+                <g stroke="#fffdf8" stroke-width="2">
+                  <line x1="160" y1="160" x2="160" y2="14" />
+                  <line x1="160" y1="160" x2="263.2" y2="56.8" />
+                  <line x1="160" y1="160" x2="306" y2="160" />
+                  <line x1="160" y1="160" x2="263.2" y2="263.2" />
+                  <line x1="160" y1="160" x2="160" y2="306" />
+                  <line x1="160" y1="160" x2="56.8" y2="263.2" />
+                  <line x1="160" y1="160" x2="14" y2="160" />
+                  <line x1="160" y1="160" x2="56.8" y2="56.8" />
+                </g>
+                <circle cx="160" cy="160" r="146" fill="none" stroke="#e5ddd0" stroke-width="3" />
+              </svg>
+            </div>
+
+            <!-- 中心凸起「转」按钮 -->
+            <button type="button" id="btn-spin-center" class="wheel-center-btn" aria-label="点击转盘中心开始决定">
+              <span class="wheel-center-ring" aria-hidden="true"></span>
+              <span class="wheel-center-label">转</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主按钮与简明指引 -->
+      <div class="stage-cta-group">
+        <button type="button" id="btn-spin-main" class="primary-spin-btn">
+          <span class="primary-spin-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 12a9 9 0 1 1-3.1-6.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <path d="M21 4.5v4.8h-4.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span id="btn-spin-main-text">开始决定</span>
+        </button>
+
+        <div class="hint-status-row">
+          <p id="wheel-hint" class="wheel-hint" role="status" aria-live="polite">拨动转盘 · 点击按钮 · 摇一摇开转</p>
+          <div id="shake-meter" class="shake-meter" hidden aria-hidden="true">
+            <span id="shake-meter-fill" class="shake-meter-fill"></span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 底部快捷功能栏 -->
+    <footer class="bottom-dock" aria-label="快捷功能栏">
+      <button type="button" id="btn-exclude-toggle" class="dock-btn" aria-pressed="false">
+        <span class="dock-icon-wrap" aria-hidden="true">
+          <svg class="dock-svg" viewBox="0 0 24 24">
+            <path d="M4 6h16l-6 7.2V19l-4-2v-3.8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+          </svg>
+          <span id="exclude-badge" class="dock-badge" hidden>0</span>
+        </span>
+        <span class="dock-label">排除已抽中</span>
+      </button>
+
+      <button type="button" id="btn-edit-wheel" class="dock-btn">
+        <span class="dock-icon-wrap" aria-hidden="true">
+          <svg class="dock-svg" viewBox="0 0 24 24">
+            <path d="M12 20h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span class="dock-label">编辑选项</span>
+      </button>
+
+      <button type="button" id="btn-shake-toggle" class="dock-btn" aria-pressed="false">
+        <span class="dock-icon-wrap" aria-hidden="true">
+          <svg class="dock-svg" viewBox="0 0 24 24">
+            <rect x="7.5" y="3.5" width="9" height="17" rx="2" fill="none" stroke="currentColor" stroke-width="1.8" />
+            <path d="M4 8.5c-1 2.2-1 4.8 0 7M20 8.5c1 2.2 1 4.8 0 7M11 17.2h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+          <span id="shake-status-dot" class="dock-status-pill">未开</span>
+        </span>
+        <span class="dock-label">摇一摇</span>
+      </button>
+
+      <button type="button" id="btn-history" class="dock-btn">
+        <span class="dock-icon-wrap" aria-hidden="true">
+          <svg class="dock-svg" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+            <path d="M12 7.5v4.8l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span id="history-badge" class="dock-badge" hidden>0</span>
+        </span>
+        <span class="dock-label">历史记录</span>
+      </button>
+    </footer>
+  </div>
+
+  <!-- 全局轻提示 -->
+  <div id="app-toast" class="app-toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Chrome 61 回退遮罩层 -->
+  <div id="modal-backdrop-fallback" class="modal-backdrop" aria-hidden="true"></div>
+
+  <!-- 弹窗 1：结果揭晓与 3:4 决定签海报 -->
+  <dialog id="modal-result" class="app-dialog" closedby="any" aria-labelledby="result-modal-title">
+    <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+    <div class="dialog-panel dialog-panel-result">
+      <div class="dialog-header">
+        <div class="dialog-title-group">
+          <span id="result-decision-no" class="result-no-chip">NO.001</span>
+          <h2 id="result-modal-title" class="dialog-title">今日天选决定</h2>
+        </div>
+        <button type="button" id="btn-close-result" class="dialog-close" aria-label="关闭结果弹窗">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="dialog-body custom-scroll">
+        <div class="result-hero-card">
+          <div class="result-meta-line">
+            <span id="result-scene-name" class="result-scene-badge">今天吃什么</span>
+            <span id="result-excluded-note" class="result-excluded-note" hidden></span>
+          </div>
+          <div class="result-winner-row">
+            <span id="result-color-dot" class="result-color-dot" aria-hidden="true"></span>
+            <strong id="result-winner-label" class="result-winner-label">麻辣烫</strong>
+          </div>
+          <p id="result-fortune-note" class="result-fortune-note">天选落定，现在就出发吧！</p>
+        </div>
+
+        <div class="result-action-row">
+          <button type="button" id="btn-result-respin" class="btn-secondary">再转一次</button>
+          <button type="button" id="btn-result-exclude-respin" class="btn-secondary">剔除该项再转</button>
+        </div>
+
+        <button type="button" id="btn-generate-poster" class="btn-accent-full">
+          <svg class="btn-inline-svg" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="4" y="3.5" width="16" height="17" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+            <path d="M8 9h8M8 13h8M9.5 16.5h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+          </svg>
+          <span id="btn-generate-poster-text">生成决定签</span>
+        </button>
+
+        <section id="poster-preview-panel" class="poster-preview-panel" hidden aria-label="决定签海报预览与分享">
+          <div class="poster-frame">
+            <div class="poster-ratio-box">
+              <img id="poster-preview-img" class="poster-preview-img" alt="今日天选决定签 3 比 4 海报预览" />
+            </div>
+          </div>
+
+          <div class="poster-actions-grid">
+            <button type="button" id="btn-poster-save" class="poster-action-btn">保存相册</button>
+            <button type="button" id="btn-poster-post" class="poster-action-btn poster-action-primary">发笔记</button>
+            <button type="button" id="btn-poster-comment" class="poster-action-btn">评论区晒结果</button>
+            <button type="button" id="btn-poster-share" class="poster-action-btn">分享工具卡</button>
+          </div>
+          <p id="poster-action-status" class="poster-action-status" role="status" aria-live="polite" hidden></p>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 弹窗 2：转盘编辑器 -->
+  <dialog id="modal-editor" class="app-dialog" closedby="any" aria-labelledby="editor-modal-title">
+    <div class="dialog-panel dialog-panel-editor">
+      <div class="dialog-header">
+        <h2 id="editor-modal-title" class="dialog-title">编辑转盘</h2>
+        <button type="button" id="btn-close-editor" class="dialog-close" aria-label="关闭编辑器">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="dialog-body custom-scroll">
+        <div class="editor-top-tools">
+          <button type="button" id="btn-editor-new-custom" class="btn-chip">+ 新建自定义转盘</button>
+          <button type="button" id="btn-editor-reset-preset" class="btn-chip">恢复当前预设</button>
+          <button type="button" id="btn-editor-delete-custom" class="btn-chip btn-chip-danger" hidden>删除自定义</button>
+        </div>
+
+        <div class="form-field">
+          <label class="field-label" for="editor-scene-name">场景标题</label>
+          <input id="editor-scene-name" class="text-input" type="text" maxlength="18" placeholder="输入转盘名称（最多18字）" />
+        </div>
+
+        <div class="form-field">
+          <span class="field-label">转盘配色方案</span>
+          <div id="editor-palette-list" class="palette-grid" role="radiogroup" aria-label="选择转盘色板"></div>
+        </div>
+
+        <div class="form-field">
+          <div class="items-header-row">
+            <span id="editor-items-count" class="field-label">选项列表 (8/16)</span>
+            <button type="button" id="btn-editor-add-item" class="btn-chip">+ 添加选项</button>
+          </div>
+          <div id="editor-items-list" class="editor-items-list"></div>
+        </div>
+
+        <p id="editor-error" class="form-error" role="alert" hidden></p>
+      </div>
+
+      <div class="dialog-footer">
+        <button type="button" id="btn-editor-cancel" class="btn-secondary">取消</button>
+        <button type="button" id="btn-editor-save" class="btn-accent">保存并应用</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 弹窗 3：历史记录 -->
+  <dialog id="modal-history" class="app-dialog" closedby="any" aria-labelledby="history-modal-title">
+    <div class="dialog-panel dialog-panel-history">
+      <div class="dialog-header">
+        <h2 id="history-modal-title" class="dialog-title">决定历史</h2>
+        <div class="dialog-header-actions">
+          <button type="button" id="btn-history-clear" class="btn-chip btn-chip-danger">清空</button>
+          <button type="button" id="btn-close-history" class="dialog-close" aria-label="关闭历史记录">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="dialog-body custom-scroll">
+        <div id="history-empty" class="history-empty">
+          <p class="history-empty-title">还没有抽取记录</p>
+          <p class="history-empty-desc">转动转盘后，最近 20 条天选决定会保存在这里</p>
+        </div>
+        <ul id="history-list" class="history-list" hidden></ul>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 弹窗 4：设置与关于 -->
+  <dialog id="modal-settings" class="app-dialog" closedby="any" aria-labelledby="settings-modal-title">
+    <div class="dialog-panel dialog-panel-settings">
+      <div class="dialog-header">
+        <h2 id="settings-modal-title" class="dialog-title">设置与关于</h2>
+        <button type="button" id="btn-close-settings" class="dialog-close" aria-label="关闭设置弹窗">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="dialog-body custom-scroll">
+        <div class="settings-section">
+          <span class="settings-label">外观主题</span>
+          <div class="segmented-group" role="group" aria-label="选择外观主题">
+            <button type="button" id="btn-setting-theme-light" class="segmented-btn is-active" aria-pressed="true">晨雾暖白</button>
+            <button type="button" id="btn-setting-theme-dark" class="segmented-btn" aria-pressed="false">暮夜黑金</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <span class="settings-label">转盘音效</span>
+          <div class="segmented-group" role="group" aria-label="选择音效模式">
+            <button type="button" id="btn-sound-ratchet" class="segmented-btn is-active" data-sound-mode="ratchet" aria-pressed="true">机械棘轮</button>
+            <button type="button" id="btn-sound-wood" class="segmented-btn" data-sound-mode="wood" aria-pressed="false">清脆木拨</button>
+            <button type="button" id="btn-sound-mute" class="segmented-btn" data-sound-mode="mute" aria-pressed="false">静音</button>
+          </div>
+        </div>
+
+        <div class="settings-row-card">
+          <div class="settings-row-text">
+            <span class="settings-row-title">指针震动反馈</span>
+            <span id="setting-vibrate-hint" class="settings-row-desc">过线微震手感，跟随指针同步触发</span>
+          </div>
+          <button type="button" id="btn-setting-vibrate" class="toggle-switch is-on" role="switch" aria-checked="true" aria-label="切换震动反馈">
+            <span class="toggle-knob" aria-hidden="true"></span>
+            <span class="toggle-state-text">开</span>
+          </button>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-row-card settings-row-card-plain">
+            <div class="settings-row-text">
+              <span class="settings-row-title">摇一摇开转</span>
+              <span id="setting-shake-hint" class="settings-row-desc">轻摇手机即可启动转盘（需 App 9.50+）</span>
+            </div>
+            <button type="button" id="btn-setting-shake" class="toggle-switch" role="switch" aria-checked="false" aria-label="切换摇一摇开转">
+              <span class="toggle-knob" aria-hidden="true"></span>
+              <span class="toggle-state-text">关</span>
+            </button>
+          </div>
+
+          <div class="sensitivity-wrap">
+            <span class="settings-sub-label">摇晃灵敏度</span>
+            <div class="segmented-group" role="group" aria-label="选择摇一摇灵敏度">
+              <button type="button" id="btn-sensitivity-sensitive" class="segmented-btn" data-sensitivity="sensitive" aria-pressed="false">灵敏</button>
+              <button type="button" id="btn-sensitivity-normal" class="segmented-btn is-active" data-sensitivity="normal" aria-pressed="true">适中</button>
+              <button type="button" id="btn-sensitivity-steady" class="segmented-btn" data-sensitivity="steady" aria-pressed="false">稳重</button>
+            </div>
+          </div>
+        </div>
+
+        <section class="about-card" aria-label="开源致谢与作者信息">
+          <h3 class="about-heading">开源致谢</h3>
+          <p class="about-text">转盘核心物理旋转与绘制引擎致谢开源项目 CrazyTim/spin-wheel (MIT License)。</p>
+          <p class="creator-watermark">made by 八根草</p>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
+  <script defer src="./xhs-bridge.js"></script>
+  <script defer src="./presets.js"></script>
+  <script defer src="./spin-wheel-core.js"></script>
+  <script defer src="./audio-motion.js"></script>
+  <script defer src="./share-card.js"></script>
+  <script defer src="./app.js"></script>
+</body>
+</html>
